@@ -1,0 +1,23 @@
+{
+    "name": "matmar10/lib-money",
+    "description": "A series of money related utility classes wrapping integer math and money fractional allocation.",
+    "keywords": ["currency", "money", "currency code", "integer math", "iso4217", "validator"],
+    "type": "lib",
+    "license": "Apache License, Version 2.0",
+    "authors": [
+        {
+            "name": "Matthew J. Martin",
+            "email": "matthew.mar10@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "jms/serializer": "~0.1"
+    },
+    "suggest": {
+        "jms/serializer": "Allows complex serialization of currency objects"
+    },
+    "autoload": {
+        "psr-0": { "Matmar10\\Money": "src/" }
+    },
+    "target-dir": "Matmar10\\Money"
+}
