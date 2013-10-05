@@ -522,4 +522,14 @@ class MoneyTest extends TestCase
         $usdMoney->setAmountFloat(100);
         $shares = $usdMoney->allocate(array(1, -0.5));
     }
+
+    public function test__toString()
+    {
+        $btc = new Currency('USD', 2, 2, '$');
+        $btcAmount = new Money($btc);
+        $btcAmount->setAmountFloat(98.76);
+
+        $this->assertEquals('98.76 USD', $btcAmount->__toString());
+        $this->assertEquals('98.76 USD', (string)$btcAmount);
+    }
 }

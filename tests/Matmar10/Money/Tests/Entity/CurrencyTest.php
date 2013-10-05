@@ -82,4 +82,13 @@ class CurrencyTest extends TestCase
         $this->assertEquals($cad, $cadResult);
 
     }
+
+
+
+    public function test__toString()
+    {
+        $usd = new Currency('USD', 2, 2, '$');
+        $this->assertEquals('USD', $usd->__toString());
+        $this->assertEquals('USD', (string)$usd);
+    }
 }

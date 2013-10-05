@@ -85,4 +85,13 @@ class CurrencyPairTest extends TestCase
 
     }
 
+    public function test__toString()
+    {
+        $btc = new Currency('BTC', 8, 8);
+        $usd = new Currency('USD', 2, 2, '$');
+        $btcToUsd = new CurrencyPair($btc, $usd, 130);
+
+        $this->assertEquals('BTC:USD@130', $btcToUsd->__toString());
+        $this->assertEquals('BTC:USD@130', (string)$btcToUsd);
+    }
 }

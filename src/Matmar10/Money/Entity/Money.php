@@ -110,11 +110,6 @@ class Money
         $this->setAmountFloat((float)$amountDisplay);
     }
 
-    public function __toString()
-    {
-        return $this->getAmountDisplay();
-    }
-
     public function add(Money $money)
     {
         $this->assertSameCurrency($money);
@@ -274,5 +269,9 @@ class Money
 
         return $convertedResults;
     }
-    
+
+    public function __toString()
+    {
+        return $this->getAmountDisplay() . ' ' . $this->currency;
+    }
 }

@@ -72,4 +72,12 @@ class CurrencyPair extends BaseCurrencyPair
             $amount->getCurrency()->getCurrencyCode()
         );
     }
+
+    /**
+     * {inheritDoc}
+     */
+    public function __toString()
+    {
+        return (string)$this->getFromCurrency() . ':' . (string)$this->getToCurrency() . '@' . $this->multiplier;
+    }
 }
