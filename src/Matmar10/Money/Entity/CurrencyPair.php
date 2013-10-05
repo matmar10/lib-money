@@ -37,10 +37,18 @@ class CurrencyPair extends BaseCurrencyPair
     {
         return $this->multiplier;
     }
-    
+
+    public function getInverse()
+    {
+        $className = get_class($this);
+        if(!is_null($this->multiplier)) {
+            return new $className($this->toCurrency, $this->fromCurrency, 1 / $this->multiplier);
+        }
+        return new $className($this->toCurrency, $this->fromCurrency);
+    }
+
     public function convert(Money $amount)
     {
-
         if($amount->getCurrency()->equals($this->getFromCurrency())) {
             $newAmount = $amount->multiply($this->getMultiplier());
             $newMoney = new Money($this->toCurrency);

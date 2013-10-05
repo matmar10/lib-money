@@ -18,13 +18,13 @@ class BaseCurrencyPair implements CurrencyPairInterface
 {
 
     /**
-     * @Type("Lmh\Bundle\MoneyBundle\Currency\Currency")
+     * @Type("Matmar10\Money\Entity\Currency")
      * @SerializedName("fromCurrency")
      */
     protected $fromCurrency;
 
     /**
-     * @Type("Lmh\Bundle\MoneyBundle\Currency\Currency")
+     * @Type("Matmar10\Money\Entity\Currency")
      * @SerializedName("toCurrency")
      */
     protected $toCurrency;
@@ -57,7 +57,7 @@ class BaseCurrencyPair implements CurrencyPairInterface
     /**
      * Compares whether this currency pair equals the supplied currency code
      *
-     * @param \Matmar10\Money\Entity\CurrencyPair $currencyPair The currency pair to check against
+     * @param \Matmar10\Money\Entity\CurrencyPairInterface $currencyPair The currency pair to check against
      * @return boolean
      */
     public function equals(CurrencyPairInterface $currencyPair)
@@ -69,7 +69,7 @@ class BaseCurrencyPair implements CurrencyPairInterface
     /**
      * Checks whether the provided currency pair is the opposite of this pair
      *
-     * @param \Matmar10\Money\Entity\CurrencyPair $currencyPair The currency pair to check against
+     * @param \Matmar10\Money\Entity\CurrencyPairInterface $currencyPair The currency pair to check against
      * @return boolean
      */
     public function isInverse(CurrencyPairInterface $currencyPair)
@@ -78,22 +78,32 @@ class BaseCurrencyPair implements CurrencyPairInterface
             self::currencyCodesMatch($this->toCurrency, $currencyPair->getFromCurrency());
     }
 
+    /**
+     * Returns the inverse of the currency pair instance
+     *
+     * @return \Matmar10\Money\Entity\CurrencyPairInterface
+     */
     public function getInverse()
     {
         $className = get_class($this);
-        if(!is_null($this->multiplier)) {
-            return new $className($this->toCurrency, $this->fromCurrency, 1 / $this->multiplier);
-        }
         return new $className($this->toCurrency, $this->fromCurrency);
     }
 
-    // compare as plain strings, ignoring precision
+    /**
+     * Compares currency codes as plain strings, ignoring precision
+     *
+     * @param \Matmar10\Money\Entity\CurrencyInterface $currency The currency pair to check against
+     * @param \Matmar10\Money\Entity\CurrencyInterface $compareToCurrency The currency pair to check against
+     * @return boolean
+     */
     static function currencyCodesMatch(CurrencyInterface $currency, CurrencyInterface $compareToCurrency)
     {
         return $currency->getCurrencyCode() === $compareToCurrency->getCurrencyCode();
-
     }
 
+    /**
+     * {inheritDoc}
+     */
     public function __toString()
     {
         return (string)$this->getFromCurrency() . ":" . (string)$this->getToCurrency();

@@ -2,9 +2,11 @@
 
 namespace Matmar10\Money\Tests\Entity;
 
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Matmar10\Money\Entity\CurrencyPair;
 use Matmar10\Money\Entity\Currency;
 use Matmar10\Money\Entity\Money;
+use JMS\Serializer\SerializerBuilder;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class CurrencyPairTest extends TestCase
@@ -19,6 +21,9 @@ class CurrencyPairTest extends TestCase
 
     public function setUp()
     {
+        AnnotationRegistry::registerAutoloadNamespaces(array(
+            'JMS\\Serializer\\Annotation' => __DIR__ . '/../../../../../vendor/jms/serializer/src/'
+        ));
         $this->usd = new Currency('USD', 5, 2);
         $this->usdMoney = new Money($this->usd);
 
@@ -52,6 +57,32 @@ class CurrencyPairTest extends TestCase
         $jpnAmount->setAmountFloat(100);
 
         $this->rate->convert($jpnAmount);
+    }
+
+
+    public function testSerialize()
+    {
+
+        $serializer = SerializerBuilder::create()->build();
+
+        $usd = new Currency('USD', 5, 2);
+        $btc = new Currency('BTC', 8, 8);
+        $pair = new CurrencyPair($usd, $btc, 130);
+        $json = $serializer->serialize($pair, 'json');
+        $this->assertEquals('{"fromCurrency":{"currencyCode":"USD","precision":5,"displayPrecision":2,"symbol":""},"toCurrency":{"currencyCode":"BTC","precision":8,"displayPrecision":8,"symbol":""},"multiplier":130}', $json);
+    }
+
+    public function testDeserialize()
+    {
+
+        $serializer = SerializerBuilder::create()->build();
+
+        $usd = new Currency('USD', 5, 2);
+        $btc = new Currency('BTC', 8, 8);
+        $expectedPair = new CurrencyPair($usd, $btc, 130);
+        $pair = $serializer->deserialize('{"fromCurrency":{"currencyCode":"USD","precision":5,"displayPrecision":2,"symbol":""},"toCurrency":{"currencyCode":"BTC","precision":8,"displayPrecision":8,"symbol":""},"multiplier":130}', 'Matmar10\Money\Entity\CurrencyPair', 'json');
+        $this->assertEquals($expectedPair, $pair);
+
     }
 
 }
