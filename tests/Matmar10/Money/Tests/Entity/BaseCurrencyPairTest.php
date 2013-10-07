@@ -3,13 +3,13 @@
 namespace Matmar10\Money\Tests\Entity;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Matmar10\Money\Entity\BaseCurrencyPair;
+use Matmar10\Money\Entity\CurrencyPair;
 use Matmar10\Money\Entity\Currency;
 use Matmar10\Money\Entity\Money;
 use JMS\Serializer\SerializerBuilder;
 use PHPUnit_Framework_TestCase as TestCase;
 
-class BaseCurrencyPairTest extends TestCase
+class CurrencyPairTest extends TestCase
 {
     protected $usd;
     protected $eur;
@@ -25,8 +25,8 @@ class BaseCurrencyPairTest extends TestCase
         $this->usd = new Currency('USD', 5, 2);
         $this->eur = new Currency('EUR', 5, 2);
         $this->gbp = new Currency('GBP', 5, 2);
-        $this->usdToEur = new BaseCurrencyPair($this->usd, $this->eur);
-        $this->usdToGbp = new BaseCurrencyPair($this->usd, $this->gbp);
+        $this->usdToEur = new CurrencyPair($this->usd, $this->eur);
+        $this->usdToGbp = new CurrencyPair($this->usd, $this->gbp);
     }
 
     public function testEquals()
@@ -39,21 +39,21 @@ class BaseCurrencyPairTest extends TestCase
 
     public function testIsInverse()
     {
-        $eurToUsd = new BaseCurrencyPair($this->eur, $this->usd);
+        $eurToUsd = new CurrencyPair($this->eur, $this->usd);
         $this->assertTrue($eurToUsd->isInverse($this->usdToEur));
         $this->assertFalse($this->usdToGbp->isInverse($this->usdToEur));
     }
 
     public function testGetInverse()
     {
-        $eurToUsd = new BaseCurrencyPair($this->eur, $this->usd);
+        $eurToUsd = new CurrencyPair($this->eur, $this->usd);
         $this->assertEquals($eurToUsd, $this->usdToEur->getInverse());
     }
 
     public function testCurrencyCodesMatch()
     {
-        $this->assertTrue(BaseCurrencyPair::currencyCodesMatch($this->usd, $this->usd));
-        $this->assertFalse(BaseCurrencyPair::currencyCodesMatch($this->usd, $this->gbp));
+        $this->assertTrue(CurrencyPair::currencyCodesMatch($this->usd, $this->usd));
+        $this->assertFalse(CurrencyPair::currencyCodesMatch($this->usd, $this->gbp));
     }
 
     public function test__toString()
@@ -70,7 +70,7 @@ class BaseCurrencyPairTest extends TestCase
 
         $usd = new Currency('USD', 5, 2);
         $btc = new Currency('BTC', 8, 8);
-        $pair = new BaseCurrencyPair($usd, $btc);
+        $pair = new CurrencyPair($usd, $btc);
         $json = $serializer->serialize($pair, 'json');
         $this->assertEquals('{"fromCurrency":{"currencyCode":"USD","precision":5,"displayPrecision":2,"symbol":""},"toCurrency":{"currencyCode":"BTC","precision":8,"displayPrecision":8,"symbol":""}}', $json);
     }
@@ -81,8 +81,8 @@ class BaseCurrencyPairTest extends TestCase
 
         $usd = new Currency('USD', 5, 2);
         $btc = new Currency('BTC', 8, 8);
-        $expectedPair = new BaseCurrencyPair($usd, $btc);
-        $pair = $serializer->deserialize('{"fromCurrency":{"currencyCode":"USD","precision":5,"displayPrecision":2,"symbol":""},"toCurrency":{"currencyCode":"BTC","precision":8,"displayPrecision":8,"symbol":""}}', 'Matmar10\Money\Entity\BaseCurrencyPair', 'json');
+        $expectedPair = new CurrencyPair($usd, $btc);
+        $pair = $serializer->deserialize('{"fromCurrency":{"currencyCode":"USD","precision":5,"displayPrecision":2,"symbol":""},"toCurrency":{"currencyCode":"BTC","precision":8,"displayPrecision":8,"symbol":""}}', 'Matmar10\Money\Entity\CurrencyPair', 'json');
         $this->assertEquals($expectedPair, $pair);
     }
 

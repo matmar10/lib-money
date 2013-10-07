@@ -7,70 +7,102 @@ use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
-use Matmar10\Money\Entity\BaseCurrencyPair;
-use Matmar10\Money\Entity\CurrencyInterface;
-use Matmar10\Money\Entity\Money;
-use Matmar10\Money\Exception\InvalidArgumentException;
+use Matmar10\Money\Entity\Currency;
+use Matmar10\Money\Entity\CurrencyPairInterface;
 
 /**
  * @AccessType("public_method")
  * @ExclusionPolicy("none")
  */
-class CurrencyPair extends BaseCurrencyPair
+class CurrencyPair implements CurrencyPairInterface
 {
+
     /**
-     * @Type("double")
+     * @var \Matmar10\Money\Entity\Currency
+     *
+     * @Type("Matmar10\Money\Entity\Currency")
+     * @SerializedName("fromCurrency")
      */
-    protected $multiplier;
+    protected $fromCurrency;
 
-    public function __construct(CurrencyInterface $fromCurrency, CurrencyInterface $toCurrency, $multiplier) {
-        parent::__construct($fromCurrency, $toCurrency);
-        $this->multiplier = $multiplier;
+    /**
+     * @var \Matmar10\Money\Entity\Currency
+     *
+     * @Type("Matmar10\Money\Entity\Currency")
+     * @SerializedName("toCurrency")
+     */
+    protected $toCurrency;
+
+    public function __construct(CurrencyInterface $fromCurrency, CurrencyInterface $toCurrency) {
+        $this->fromCurrency = $fromCurrency;
+        $this->toCurrency = $toCurrency;
     }
 
-    public function setMultiplier($multiplier)
+    public function setFromCurrency(CurrencyInterface $fromCurrency)
     {
-        $this->multiplier = $multiplier;
+        $this->fromCurrency = $fromCurrency;
     }
 
-    public function getMultiplier()
+    public function getFromCurrency()
     {
-        return $this->multiplier;
+        return $this->fromCurrency;
     }
 
+    public function setToCurrency(CurrencyInterface $toCurrency)
+    {
+        $this->toCurrency = $toCurrency;
+    }
+
+    public function getToCurrency()
+    {
+        return $this->toCurrency;
+    }
+
+    /**
+     * Compares whether this currency pair equals the supplied currency code
+     *
+     * @param \Matmar10\Money\Entity\CurrencyPairInterface $currencyPair The currency pair to check against
+     * @return boolean
+     */
+    public function equals(CurrencyPairInterface $currencyPair)
+    {
+        return self::currencyCodesMatch($this->fromCurrency, $currencyPair->getFromCurrency()) &&
+            self::currencyCodesMatch($this->toCurrency, $currencyPair->getToCurrency());
+    }
+
+    /**
+     * Checks whether the provided currency pair is the opposite of this pair
+     *
+     * @param \Matmar10\Money\Entity\CurrencyPairInterface $currencyPair The currency pair to check against
+     * @return boolean
+     */
+    public function isInverse(CurrencyPairInterface $currencyPair)
+    {
+        return self::currencyCodesMatch($this->fromCurrency, $currencyPair->getToCurrency()) &&
+            self::currencyCodesMatch($this->toCurrency, $currencyPair->getFromCurrency());
+    }
+
+    /**
+     * Returns the inverse of the currency pair instance
+     *
+     * @return \Matmar10\Money\Entity\CurrencyPairInterface
+     */
     public function getInverse()
     {
         $className = get_class($this);
-        if(!is_null($this->multiplier)) {
-            return new $className($this->toCurrency, $this->fromCurrency, 1 / $this->multiplier);
-        }
         return new $className($this->toCurrency, $this->fromCurrency);
     }
 
-    public function convert(Money $amount)
+    /**
+     * Compares currency codes as plain strings, ignoring precision
+     *
+     * @param \Matmar10\Money\Entity\CurrencyInterface $currency The currency pair to check against
+     * @param \Matmar10\Money\Entity\CurrencyInterface $compareToCurrency The currency pair to check against
+     * @return boolean
+     */
+    static function currencyCodesMatch(CurrencyInterface $currency, CurrencyInterface $compareToCurrency)
     {
-        if($amount->getCurrency()->equals($this->getFromCurrency())) {
-            $newAmount = $amount->multiply($this->getMultiplier());
-            $newMoney = new Money($this->toCurrency);
-            $newMoney->setAmountFloat($newAmount->getAmountFloat());
-            return $newMoney;
-        }
-
-        if($amount->getCurrency()->equals($this->getToCurrency())) {
-            $newAmount = $amount->divide($this->getMultiplier());
-            $newMoney = new Money($this->fromCurrency);
-            $newMoney->setAmountFloat($newAmount->getAmountFloat());
-            return $newMoney;
-        }
-
-        throw new InvalidArgumentException("Cannot convert from " . $amount->getCurrency()->getCurrencyCode() .
-            " using CurrencyRate of " .
-            $this->getFromCurrency()->getCurrencyCode() .
-            " to " .
-            $this->getToCurrency()->getCurrencyCode() .
-            ": CurrencyRate must include the base currency " .
-            $amount->getCurrency()->getCurrencyCode()
-        );
+        return $currency->getCurrencyCode() === $compareToCurrency->getCurrencyCode();
     }
 
     /**
@@ -78,6 +110,6 @@ class CurrencyPair extends BaseCurrencyPair
      */
     public function __toString()
     {
-        return (string)$this->getFromCurrency() . ':' . (string)$this->getToCurrency() . '@' . $this->multiplier;
+        return (string)$this->getFromCurrency() . ":" . (string)$this->getToCurrency();
     }
 }

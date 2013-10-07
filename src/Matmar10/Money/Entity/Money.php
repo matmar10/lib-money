@@ -7,52 +7,61 @@ use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
+use Matmar10\Money\Entity\CurrencyInterface;
+use Matmar10\Money\Entity\MoneyInterface;
 use Matmar10\Money\Exception\InvalidArgumentException;
 
 /**
  * @AccessType("public_method")
  * @ExclusionPolicy("none")
  */
-class Money
+class Money implements MoneyInterface
 {
 
-    const ROUND_TO_DISPLAY = 'ROUND_TO_DISPLAY';
-    const ROUND_TO_DEFAULT = 'ROUND_TO_DEFAULT';
-
     /**
+     * @var \Matmar10\Money\Entity\CurrencyInterface
+     *
      * @Type("Matmar10\Money\Entity\Currency")
      */
     protected $currency;
 
     /**
+     * @var integer
+     *
      * @Type("integer")
      * @ReadOnly
      */
     protected $scale;
 
     /**
+     * @var integer
+     *
      * @Type("integer")
      * @SerializedName("amountInteger")
      */
     protected $amountInteger = 0;
 
     /**
+     * @var float
+     *
      * @Type("double")
      * @SerializedName("amountFloat")
      */
     protected $amountFloat;
 
     /**
+     * @var string
+     *
      * @Type("string")
      * @SerializedName("amountDisplay")
      */
     protected $amountDisplay;
 
-    public function __construct(Currency $currency) {
+    public function __construct(CurrencyInterface $currency) {
         $this->setCurrency($currency);
     }
 
-    public function setCurrency(Currency $currency)
+    public function setCurrency(CurrencyInterface $currency)
     {
         $this->currency = $currency;
         $this->scale = bcpow(10, $currency->getPrecision(), 0);
@@ -110,7 +119,7 @@ class Money
         $this->setAmountFloat((float)$amountDisplay);
     }
 
-    public function add(Money $money)
+    public function add(MoneyInterface $money)
     {
         $this->assertSameCurrency($money);
         $newMoney = new Money($this->getCurrency());
@@ -119,7 +128,7 @@ class Money
         return $newMoney;
     }
 
-    public function subtract(Money $money)
+    public function subtract(MoneyInterface $money)
     {
         $this->assertSameCurrency($money);
         $newMoney = new Money($this->getCurrency());
@@ -144,12 +153,12 @@ class Money
         return $newMoney;
     }
 
-    public function isSameCurrency(Money $rightHandValue)
+    public function isSameCurrency(MoneyInterface $rightHandValue)
     {
         return $this->currency->equals($rightHandValue->getCurrency());
     }
 
-    public function assertSameCurrency(Money $rightHandValue)
+    public function assertSameCurrency(MoneyInterface $rightHandValue)
     {
         if(!$this->isSameCurrency($rightHandValue)) {
             $msg = "Different currencies provided: Money object of Currency type %s with precision %n and display precision %n expected.";
@@ -157,37 +166,37 @@ class Money
         }
     }
 
-    public function isLess(Money $rightHandValue)
+    public function isLess(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
         return $this->amountInteger < $rightHandValue->getAmountInteger();
     }
 
-    public function isGreater(Money $rightHandValue)
+    public function isGreater(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
         return $this->amountInteger > $rightHandValue->getAmountInteger();
     }
 
-    public function isEqual(Money $rightHandValue)
+    public function isEqual(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
         return $this->amountInteger === $rightHandValue->getAmountInteger();
     }
 
-    public function isLessOrEqual(Money $rightHandValue)
+    public function isLessOrEqual(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
         return $this->amountInteger <= $rightHandValue->getAmountInteger();
     }
 
-    public function isGreaterOrEqual(Money $rightHandValue)
+    public function isGreaterOrEqual(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
         return $this->amountInteger >= $rightHandValue->getAmountInteger();
     }
 
-    public function compare(Money $rightHandValue)
+    public function compare(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
         $otherAmount = $rightHandValue->getAmountInteger();
