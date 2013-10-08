@@ -12,6 +12,11 @@ use Matmar10\Money\Entity\MoneyInterface;
 use Matmar10\Money\Exception\InvalidArgumentException;
 
 /**
+ * Money
+ *
+ * @package lib-money
+ * @author <matthew.mar10@gmail.com>
+ *
  * @AccessType("public_method")
  * @ExclusionPolicy("none")
  */

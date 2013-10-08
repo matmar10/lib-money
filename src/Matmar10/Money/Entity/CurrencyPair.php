@@ -11,6 +11,10 @@ use Matmar10\Money\Entity\Currency;
 use Matmar10\Money\Entity\CurrencyPairInterface;
 
 /**
+ * Currency
+ * @package lib-money
+ * @author <matthew.mar10@gmail.com>
+ *
  * @AccessType("public_method")
  * @ExclusionPolicy("none")
  */

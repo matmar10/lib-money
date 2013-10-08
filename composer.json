@@ -11,7 +11,8 @@
         }
     ],
     "require-dev": {
-        "jms/serializer": "~0.1"
+        "jms/serializer": "~0.1",
+        "phpdocumentor/phpdocumentor": "~2.0.1"
     },
     "suggest": {
         "jms/serializer": "Allows complex serialization of currency objects"

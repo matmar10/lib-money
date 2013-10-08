@@ -4,6 +4,12 @@ namespace Matmar10\Money\Entity;
 
 use Matmar10\Money\Entity\CurrencyInterface;
 
+/**
+ * CurrencyPairInterface
+ *
+ * @package lib-money
+ * @author <matthew.mar10@gmail.com>
+ */
 interface CurrencyPairInterface
 {
 
