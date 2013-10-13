@@ -3,6 +3,7 @@
 namespace Matmar10\Money\Entity;
 
 use Matmar10\Money\Entity\MoneyInterface;
+use Matmar10\Money\Entity\CurrencyPairInterface;
 
 /**
  * ExchangeRateInterface
@@ -10,7 +11,7 @@ use Matmar10\Money\Entity\MoneyInterface;
  * @package lib-money
  * @author <matthew.mar10@gmail.com>
  */
-interface ExchangeRateInterface
+interface ExchangeRateInterface extends CurrencyPairInterface
 {
     /**
      * @abstract
