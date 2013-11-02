@@ -109,7 +109,7 @@ class Money implements MoneyInterface
 
     public function getAmountInteger()
     {
-        return $this->amountInteger;
+        return (integer)$this->amountInteger;
     }
 
     public function getAmountDisplay()
@@ -174,31 +174,31 @@ class Money implements MoneyInterface
     public function isLess(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
-        return $this->amountInteger < $rightHandValue->getAmountInteger();
+        return (integer)$this->amountInteger < $rightHandValue->getAmountInteger();
     }
 
     public function isGreater(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
-        return $this->amountInteger > $rightHandValue->getAmountInteger();
+        return (integer)$this->amountInteger > $rightHandValue->getAmountInteger();
     }
 
     public function isEqual(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
-        return $this->amountInteger === $rightHandValue->getAmountInteger();
+        return (integer)$this->amountInteger === $rightHandValue->getAmountInteger();
     }
 
     public function isLessOrEqual(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
-        return $this->amountInteger <= $rightHandValue->getAmountInteger();
+        return (integer)$this->amountInteger <= $rightHandValue->getAmountInteger();
     }
 
     public function isGreaterOrEqual(MoneyInterface $rightHandValue)
     {
         $this->assertSameCurrency($rightHandValue);
-        return $this->amountInteger >= $rightHandValue->getAmountInteger();
+        return (integer)$this->amountInteger >= $rightHandValue->getAmountInteger();
     }
 
     public function compare(MoneyInterface $rightHandValue)
@@ -206,11 +206,11 @@ class Money implements MoneyInterface
         $this->assertSameCurrency($rightHandValue);
         $otherAmount = $rightHandValue->getAmountInteger();
 
-        if($this->amountInteger < $otherAmount) {
+        if((integer)$this->amountInteger < $otherAmount) {
             return -1;
         }
 
-        if($this->amountInteger === $otherAmount) {
+        if((integer)$this->amountInteger === $otherAmount) {
             return 0;
         }
         // $this->amountInteger > $otherAmount
@@ -276,6 +276,9 @@ class Money implements MoneyInterface
 
         $convertedResults = array();
         foreach($results as $result) {
+            /**
+             * @var $result Money
+             */
             $converted = new Money($this->currency);
             $converted->setAmountFloat($result->getAmountFloat());
             $convertedResults[] = $converted;

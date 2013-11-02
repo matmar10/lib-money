@@ -62,6 +62,10 @@ class MoneyTest extends TestCase
         $usd2->setAmountInteger(1234567899);
         $this->assertEquals(1234567899, $usd2->getAmountInteger());
         $this->assertEquals(0.1234567899, $usd2->getAmountFloat());
+
+        $usd3 = clone $this->usdMoney;
+        $usd3->setAmountInteger('12.34');
+        $this->assertInternalType('integer', $usd3->getAmountInteger());
     }
 
     public function testAmountDisplay()
@@ -246,15 +250,15 @@ class MoneyTest extends TestCase
     {
 
         $usdCurrency = clone $this->usd;
-        $usdCurrency->setPrecision(20);
+        $usdCurrency->setPrecision(10);
 
         $usd1 = clone $this->usdMoney;
         $usd1->setCurrency($usdCurrency);
         $usd2 = clone $this->usdMoney;
         $usd2->setCurrency($usdCurrency);
 
-        $usd1->setAmountInteger('1000000000000000001');
-        $usd2->setAmountInteger('10000000000000000001');
+        $usd1->setAmountInteger('100000001'); // 2,000,000,000
+        $usd2->setAmountInteger('1000000001');
         $this->assertTrue($usd1->isLess($usd2));
         
         $usd1->setAmountFloat(9);
@@ -314,7 +318,7 @@ class MoneyTest extends TestCase
     {
 
         $usdCurrency = clone $this->usd;
-        $usdCurrency->setPrecision(20);
+        $usdCurrency->setPrecision(10);
 
         $usd1 = clone $this->usdMoney;
         $usd1->setCurrency($usdCurrency);
