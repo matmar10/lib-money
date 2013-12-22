@@ -13,9 +13,30 @@ use Matmar10\Money\Entity\CurrencyInterface;
 interface CurrencyPairInterface
 {
 
+    /**
+     * @abstract
+     * @param CurrencyInterface $fromCurrency
+     * @return null
+     */
     public function setFromCurrency(CurrencyInterface $fromCurrency);
+
+    /**
+     * @abstract
+     * @return \Matmar10\Money\Entity\CurrencyInterface
+     */
     public function getFromCurrency();
+
+    /**
+     * @abstract
+     * @param CurrencyInterface $toCurrency
+     * @return null
+     */
     public function setToCurrency(CurrencyInterface $toCurrency);
+
+    /**
+     * @abstract
+     * @return \Matmar10\Money\Entity\CurrencyInterface
+     */
     public function getToCurrency();
 
     /**
