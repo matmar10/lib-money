@@ -219,7 +219,7 @@ class Money implements MoneyInterface
 
     public function isZero()
     {
-        return $this->amountInteger === 0;
+        return $this->amountInteger == 0;
     }
     
     public function isPositive()
