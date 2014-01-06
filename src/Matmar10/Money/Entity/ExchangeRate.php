@@ -70,16 +70,23 @@ class ExchangeRate extends CurrencyPair implements ExchangeRateInterface
     public function convert(MoneyInterface $amount)
     {
         if($amount->getCurrency()->equals($this->getFromCurrency())) {
-            $newAmount = $amount->multiply($this->getMultiplier());
+            $totalPrecision = $this->fromCurrency->getPrecision() + $this->toCurrency->getPrecision();
+            $targetPrecision = $this->toCurrency->getPrecision();
+            $newAmount = bcmul((string)$amount->getAmountFloat(), (string)$this->getMultiplier(), $totalPrecision);
+            $roundedAmount = round($newAmount, $targetPrecision);
             $newMoney = new Money($this->toCurrency);
-            $newMoney->setAmountFloat($newAmount->getAmountFloat());
+            $newMoney->setAmountFloat($roundedAmount);
             return $newMoney;
         }
 
+        // rate represents inverse, so treat "from" and "to" reversed
         if($amount->getCurrency()->equals($this->getToCurrency())) {
-            $newAmount = $amount->divide($this->getMultiplier());
+            $totalPrecision = $this->fromCurrency->getPrecision() + $this->toCurrency->getPrecision();
+            $targetPrecision = $this->fromCurrency->getPrecision();
+            $newAmount = bcdiv((string)$amount->getAmountFloat(), (string)$this->getMultiplier(), $totalPrecision);
+            $roundedAmount = round($newAmount, $targetPrecision);
             $newMoney = new Money($this->fromCurrency);
-            $newMoney->setAmountFloat($newAmount->getAmountFloat());
+            $newMoney->setAmountFloat($roundedAmount);
             return $newMoney;
         }
 
