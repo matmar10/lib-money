@@ -1,4 +1,4 @@
-Money Bundle
+Lib Money
 ============
 
 [![Build Status](http://ci.asedik.com/buildStatus/icon?job=money-bundle)](http://ci.asedik.com/job/money-bundle/)
