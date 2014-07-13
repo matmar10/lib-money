@@ -3,7 +3,7 @@
     "description": "A series of money related utility classes wrapping integer math and money fractional allocation.",
     "keywords": ["currency", "money", "currency code", "integer math", "iso4217", "validator"],
     "type": "lib",
-    "license": "Apache License, Version 2.0",
+    "license": "Apache License Version 2.0",
     "authors": [
         {
             "name": "Matthew J. Martin",
