@@ -129,3 +129,6 @@ $gbpAmount2 = $gbpToUsd->convert($usdAmount);
 echo $gbpAmount2->getDisplay(); // 10.00
 
 ```
+
+
+
