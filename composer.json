@@ -4,6 +4,7 @@
     "keywords": ["currency", "money", "currency code", "integer math", "iso4217", "validator"],
     "type": "lib",
     "license": "Apache License Version 2.0",
+    "version": "1.0.2",
     "authors": [
         {
             "name": "Matthew J. Martin",
