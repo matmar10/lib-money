@@ -52,13 +52,14 @@ class Currency implements CurrencyInterface
      * @param string $symbol OPTIONAL The currency symbol
      * @throws \Matmar10\Money\Exception\InvalidArgumentException if either of the precision values are not integers
      */
-    public function __construct($currencyCode, $precision, $displayPrecision, $symbol = '')
+    public function __construct($currencyCode, $precision, $displayPrecision = null, $symbol = '')
     {
         $this->setCurrencyCode($currencyCode);
         if(!is_int($precision)) {
             throw new InvalidArgumentException(sprintf('Invalid precision %s: must be of type integer', $precision));
         }
         $this->precision = $precision;
+        $displayPrecision = is_null($displayPrecision) ? $precision : $displayPrecision;
         if(!is_int($displayPrecision)) {
             throw new InvalidArgumentException(sprintf('Invalid display precision %s: must be of type integer', $displayPrecision));
         }
