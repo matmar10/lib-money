@@ -52,7 +52,7 @@ class Currency implements CurrencyInterface
      * @param string $symbol OPTIONAL The currency symbol
      * @throws \Matmar10\Money\Exception\InvalidArgumentException if either of the precision values are not integers
      */
-    public function __construct($currencyCode, $precision, $displayPrecision = null, $symbol = '')
+    public function __construct($currencyCode, $precision = 2, $displayPrecision = null, $symbol = '')
     {
         $this->setCurrencyCode($currencyCode);
         if(!is_int($precision)) {
