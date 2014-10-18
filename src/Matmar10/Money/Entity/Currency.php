@@ -48,7 +48,7 @@ class Currency implements CurrencyInterface
      *
      * @param string $currencyCode The three digit currency code (ISO-4217)
      * @param integer $precision The precision used for calculation
-     * @param integer $displayPrecision The precision used for when amounts are displayed
+     * @param integer $displayPrecision OPTIONAL The precision used for when amounts are displayed, by default it use the $precision value
      * @param string $symbol OPTIONAL The currency symbol
      * @throws \Matmar10\Money\Exception\InvalidArgumentException if either of the precision values are not integers
      */
