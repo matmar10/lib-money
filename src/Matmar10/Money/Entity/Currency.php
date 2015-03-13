@@ -47,18 +47,19 @@ class Currency implements CurrencyInterface
      * Creates a new currency instance
      *
      * @param string $currencyCode The three digit currency code (ISO-4217)
-     * @param integer $precision The precision used for calculation
-     * @param integer $displayPrecision The precision used for when amounts are displayed
+     * @param integer $precision OPTIONAL The precision used for calculation, default is 2
+     * @param integer $displayPrecision OPTIONAL The precision used for when amounts are displayed, by default it use the $precision value
      * @param string $symbol OPTIONAL The currency symbol
      * @throws \Matmar10\Money\Exception\InvalidArgumentException if either of the precision values are not integers
      */
-    public function __construct($currencyCode, $precision, $displayPrecision, $symbol = '')
+    public function __construct($currencyCode, $precision = 2, $displayPrecision = null, $symbol = '')
     {
         $this->setCurrencyCode($currencyCode);
         if(!is_int($precision)) {
             throw new InvalidArgumentException(sprintf('Invalid precision %s: must be of type integer', $precision));
         }
         $this->precision = $precision;
+        $displayPrecision = is_null($displayPrecision) ? $precision : $displayPrecision;
         if(!is_int($displayPrecision)) {
             throw new InvalidArgumentException(sprintf('Invalid display precision %s: must be of type integer', $displayPrecision));
         }
