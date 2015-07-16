@@ -65,6 +65,17 @@ class Money implements MoneyInterface
     /**
      * @param CurrencyInterface     $currency
      * @param int|float|string|null $amount
+     *
+     * @return Money
+     */
+    public static function create(CurrencyInterface $currency, $amount = null)
+    {
+        return new static($currency, $amount);
+    }
+
+    /**
+     * @param CurrencyInterface     $currency
+     * @param int|float|string|null $amount
      */
     public function __construct(CurrencyInterface $currency, $amount = null)
     {
