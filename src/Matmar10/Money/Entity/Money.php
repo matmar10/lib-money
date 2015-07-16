@@ -62,8 +62,29 @@ class Money implements MoneyInterface
      */
     protected $amountDisplay;
 
-    public function __construct(CurrencyInterface $currency) {
+    /**
+     * @param CurrencyInterface     $currency
+     * @param int|float|string|null $amount
+     */
+    public function __construct(CurrencyInterface $currency, $amount = null)
+    {
         $this->setCurrency($currency);
+        if(!is_null($amount)) {
+            switch (true) {
+                case is_float($amount):
+                    $this->setAmountFloat($amount);
+                    break;
+                case is_int($amount):
+                    $this->setAmountInteger($amount);
+                    break;
+                case is_string($amount);
+                    $this->setAmountDisplay($amount);
+                    break;
+                default:
+                    throw new \InvalidArgumentException('Amount should be INT|FLOAT|STRING|NULL');
+                    break;
+            }
+        }
     }
 
     public function setCurrency(CurrencyInterface $currency)
