@@ -4,10 +4,8 @@ namespace Matmar10\Money\Entity;
 
 use JMS\Serializer\Annotation\AccessType;
 use JMS\Serializer\Annotation\ExclusionPolicy;
-use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
-use Matmar10\Money\Entity\CurrencyInterface;
 use Matmar10\Money\Exception\InvalidArgumentException;
 
 /**
