@@ -94,7 +94,7 @@ class Money implements MoneyInterface
                     $this->setAmountDisplay($amount);
                     break;
                 default:
-                    throw new \InvalidArgumentException('Amount should be INT|FLOAT|STRING|NULL');
+                    throw new InvalidArgumentException('Amount should be INT|FLOAT|STRING|NULL');
                     break;
             }
         }
@@ -112,7 +112,11 @@ class Money implements MoneyInterface
 
     public function getScale()
     {
-        return $this->scale ?: $this->scale = bcpow(10, $this->currency->getPrecision(), 0);
+        if (!$this->scale) {
+            $this->scale = bcpow(10, $this->currency->getPrecision(), 0);
+        }
+
+        return $this->scale;
     }
 
     public function setAmountFloat($amountFloat)
