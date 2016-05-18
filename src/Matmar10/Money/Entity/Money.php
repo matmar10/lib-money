@@ -7,9 +7,8 @@ use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
-use Matmar10\Money\Entity\CurrencyInterface;
-use Matmar10\Money\Entity\MoneyInterface;
 use Matmar10\Money\Exception\InvalidArgumentException;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Money
@@ -19,6 +18,7 @@ use Matmar10\Money\Exception\InvalidArgumentException;
  *
  * @AccessType("public_method")
  * @ExclusionPolicy("none")
+ * @ORM\Embeddable()
  */
 class Money implements MoneyInterface
 {
@@ -27,6 +27,7 @@ class Money implements MoneyInterface
      * @var \Matmar10\Money\Entity\CurrencyInterface
      *
      * @Type("Matmar10\Money\Entity\Currency")
+     * @ORM\Column(name="currency", type="currency", nullable=false)
      */
     protected $currency;
 
@@ -43,6 +44,7 @@ class Money implements MoneyInterface
      *
      * @Type("integer")
      * @SerializedName("amountInteger")
+     * @ORM\Column(name="amount", type="integer", nullable=false)
      */
     protected $amountInteger = 0;
 
@@ -62,14 +64,45 @@ class Money implements MoneyInterface
      */
     protected $amountDisplay;
 
-    public function __construct(CurrencyInterface $currency) {
+    /**
+     * @param CurrencyInterface     $currency
+     * @param int|float|string|null $amount
+     *
+     * @return Money
+     */
+    public static function create(CurrencyInterface $currency, $amount = null)
+    {
+        return new static($currency, $amount);
+    }
+
+    /**
+     * @param CurrencyInterface     $currency
+     * @param int|float|string|null $amount
+     */
+    public function __construct(CurrencyInterface $currency, $amount = null)
+    {
         $this->setCurrency($currency);
+        if(!is_null($amount)) {
+            switch (true) {
+                case is_float($amount):
+                    $this->setAmountFloat($amount);
+                    break;
+                case is_int($amount):
+                    $this->setAmountInteger($amount);
+                    break;
+                case is_string($amount);
+                    $this->setAmountDisplay($amount);
+                    break;
+                default:
+                    throw new InvalidArgumentException('Amount should be INT|FLOAT|STRING|NULL');
+                    break;
+            }
+        }
     }
 
     public function setCurrency(CurrencyInterface $currency)
     {
         $this->currency = $currency;
-        $this->scale = bcpow(10, $currency->getPrecision(), 0);
     }
 
     public function getCurrency()
@@ -79,17 +112,21 @@ class Money implements MoneyInterface
 
     public function getScale()
     {
+        if (!$this->scale) {
+            $this->scale = bcpow(10, $this->currency->getPrecision(), 0);
+        }
+
         return $this->scale;
     }
 
     public function setAmountFloat($amountFloat)
     {
-        $this->amountInteger = bcmul($amountFloat, $this->scale, 0);
+        $this->amountInteger = bcmul($amountFloat, $this->getScale(), 0);
     }
 
     public function getAmountFloat($roundTo = self::ROUND_TO_DEFAULT)
     {
-        $scaled = bcdiv($this->amountInteger, $this->scale, $this->currency->getPrecision());
+        $scaled = bcdiv($this->amountInteger, $this->getScale(), $this->currency->getPrecision());
 
         if(self::ROUND_TO_DEFAULT === $roundTo) {
             $rounding = $this->currency->getPrecision();
@@ -269,7 +306,7 @@ class Money implements MoneyInterface
         for ($i = 0; $remainder->isPositive(); $i++) {
             $amountInteger = $results[$i]->getAmountInteger();
             $results[$i]->setAmountInteger($amountInteger + $increment);
-            $increment = $amount->scale / pow(10, $amount->currency->getPrecision());
+            $increment = $amount->getScale() / pow(10, $amount->currency->getPrecision());
             $remainderAmountInteger = $remainder->getAmountInteger();
             $remainder->setAmountInteger($remainderAmountInteger - $increment);
         }

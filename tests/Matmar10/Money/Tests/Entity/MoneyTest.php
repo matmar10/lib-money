@@ -134,7 +134,7 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @expectedException Matmar10\Money\Exception\InvalidArgumentException
+     * @expectedException \Matmar10\Money\Exception\InvalidArgumentException
      */
     public function testAddMismatchedCurrencies()
     {
@@ -183,7 +183,7 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @expectedException Matmar10\Money\Exception\InvalidArgumentException
+     * @expectedException \Matmar10\Money\Exception\InvalidArgumentException
      */
     public function testSubtractMismatchedCurrencies()
     {
@@ -267,7 +267,7 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @expectedException Matmar10\Money\Exception\InvalidArgumentException
+     * @expectedException \Matmar10\Money\Exception\InvalidArgumentException
      */
     public function testIsLessMismatchedCurrencies()
     {
@@ -303,7 +303,7 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @expectedException Matmar10\Money\Exception\InvalidArgumentException
+     * @expectedException \Matmar10\Money\Exception\InvalidArgumentException
      */
     public function testIsLessOrEqualMismatchedCurrencies()
     {
@@ -335,7 +335,7 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @expectedException Matmar10\Money\Exception\InvalidArgumentException
+     * @expectedException \Matmar10\Money\Exception\InvalidArgumentException
      */
     public function testIsGreaterMismatchedCurrencies()
     {
@@ -371,7 +371,7 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @expectedException Matmar10\Money\Exception\InvalidArgumentException
+     * @expectedException \Matmar10\Money\Exception\InvalidArgumentException
      */
     public function testIsGreaterOrEqualMismatchedCurrencies()
     {
@@ -495,7 +495,7 @@ class MoneyTest extends TestCase
 
 
     /**
-     * @expectedException Matmar10\Money\Exception\InvalidArgumentException
+     * @expectedException \Matmar10\Money\Exception\InvalidArgumentException
      */
     public function testAllocationEmptyArray()
     {
@@ -506,7 +506,7 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @expectedException Matmar10\Money\Exception\InvalidArgumentException
+     * @expectedException \Matmar10\Money\Exception\InvalidArgumentException
      */
     public function testAllocationZeroSumArray()
     {
@@ -517,7 +517,7 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @expectedException Matmar10\Money\Exception\InvalidArgumentException
+     * @expectedException \Matmar10\Money\Exception\InvalidArgumentException
      */
     public function testAllocationNegativeValuesArray()
     {
@@ -535,5 +535,49 @@ class MoneyTest extends TestCase
 
         $this->assertEquals('98.76 USD', $btcAmount->__toString());
         $this->assertEquals('98.76 USD', (string)$btcAmount);
+    }
+
+    public function testEasyCreateMoneyByINT() {
+        $eur = new Currency('EUR', 2, 2, '€');
+        $money = new Money($eur, 1036);
+
+        $this->assertEquals(1036, $money->getAmountInteger());
+        $this->assertEquals(10.36, $money->getAmountFloat());
+        $this->assertEquals('10.36', $money->getAmountDisplay());
+    }
+
+    public function testEasyCreateMoneyByFLOAT() {
+        $eur = new Currency('EUR', 2, 2, '€');
+        $money = new Money($eur, 10.36);
+
+        $this->assertEquals(1036, $money->getAmountInteger());
+        $this->assertEquals(10.36, $money->getAmountFloat());
+        $this->assertEquals('10.36', $money->getAmountDisplay());
+    }
+
+    public function testEasyCreateMoneyBySTRING() {
+        $eur = new Currency('EUR', 2, 2, '€');
+        $money = new Money($eur, '10.36');
+
+        $this->assertEquals(1036, $money->getAmountInteger());
+        $this->assertEquals(10.36, $money->getAmountFloat());
+        $this->assertEquals('10.36', $money->getAmountDisplay());
+    }
+
+    public function testEasyCreateMoneyByNULL() {
+        $eur = new Currency('EUR', 2, 2, '€');
+        $money = new Money($eur, null);
+
+        $this->assertEquals(0, $money->getAmountInteger());
+        $this->assertEquals(0.0, $money->getAmountFloat());
+        $this->assertEquals('0.00', $money->getAmountDisplay());
+    }
+
+    /**
+     * @expectedException \Matmar10\Money\Exception\InvalidArgumentException
+     */
+    public function testEasyCreateMoneyByInvalidAmount() {
+        $eur = new Currency('EUR', 2, 2, '€');
+        new Money($eur, new \stdClass());
     }
 }
